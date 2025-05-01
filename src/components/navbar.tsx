@@ -12,7 +12,7 @@ export const Navbar = () => {
   return (
     <nav className="mx-auto flex items-center content-center justify-center pt-4">
       <div className="flex items-center justify-center">
-        <Image src="/logo.svg" alt="Logo" width={128} height={128} />
+        <Image src="/blog/logo.svg" alt="Logo" width={128} height={128} />
       </div>
       <div className="w-full flex items-center justify-end gap-4 font-(family-name:--font-inter)">
         <Link href="/" className="relative group py-1">
