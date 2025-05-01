@@ -26,7 +26,7 @@ Esse nível destaca a essência do problema que o MCP resolve: **a criação de 
 - **Dados:** Base de dados para adicionar o contexto.
 ### Diagrama 
 
-![Diagrama C1](/articles/mcp-in-c4/c1.png)
+![Diagrama C1](/blog/articles/mcp-in-c4/c1.png)
 
 ## C2
 No nível de contêineres do **C4 Model**, exploramos os principais blocos de construção do sistema MCP, respondendo à pergunta: **"Quais são as partes fundamentais do sistema e como elas se comunicam?"**
@@ -58,7 +58,7 @@ Este nível evidencia a **arquitetura orientada à responsabilidade** do MCP, on
 Esse diagrama representa claramente a **divisão de responsabilidades entre containers** dentro do host e do servidor MCP, com os fluxos de dados marcando o ciclo completo de uma solicitação.
 
 ### Diagrama
-![Diagrama C2](/articles/mcp-in-c4/c2.png)
+![Diagrama C2](/blog/articles/mcp-in-c4/c2.png)
 **Fluxo principal**:
 1. O Host MCP inicia uma solicitação de contexto.
 2. A **camada de protocolo** empacota a solicitação segundo o padrão MCP.
@@ -96,7 +96,7 @@ No nível de componentes, exploramos os elementos funcionais internos de cada co
 | **Gerenciador de Autenticação** | Controla e valida acessos             | **Alta** — Garante segurança e governança\|             |
 | **Construtor de Contexto**      | Integra dados no prompt final         | **Alta** — Essencial para uso efetivo com LLMs          |
 ### Diagrama
-![Diagrama C3](/articles/mcp-in-c4/c3.png)
+![Diagrama C3](/blog/articles/mcp-in-c4/c3.png)
 Neste nível, observamos a **implementação concreta do protocolo MCP**. O host inicia buscando e conectando-se a servidores relevantes, envia solicitações devidamente formatadas, e processa respostas para enriquecer os prompts. O servidor, por sua vez, autentica, processa e executa as operações com eficiência e segurança.
 
 Essa arquitetura revela a natureza **modular e extensível** do MCP: cada componente pode ser desenvolvido, substituído ou evoluído de forma independente, desde que respeite os contratos estabelecidos pelo protocolo.
