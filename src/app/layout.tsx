@@ -1,0 +1,36 @@
+import type { Metadata } from "next";
+import { Playfair_Display, Inter } from "next/font/google";
+import "./globals.css";
+import { Navbar } from "@/components/navbar";
+
+const playfairDisplay = Playfair_Display({
+  variable: "--font-playfair-display",
+  subsets: ["latin"],
+});
+
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+});
+
+export const metadata: Metadata = {
+  title: "Bridge",
+  description: "Bridging Research, Innovation, and Development for Generative Software Engineering",
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html lang="en" className="scroll-pt-[3.5rem]">
+      <body
+        className={`container max-w-[1024px] px-6 mx-auto min-h-screen bg-background ${inter.variable} ${playfairDisplay.variable} antialiased`}
+      >
+        <Navbar />
+        <main className="flex-1">{children}</main>
+      </body>
+    </html>
+  );
+}
