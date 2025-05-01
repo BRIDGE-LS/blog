@@ -1,0 +1,104 @@
+---
+title: Model Context Protocol em C4 Model
+slug: mcp-in-c4
+date: 2025-05-01
+published: true
+author: Gabriel Lima
+tags: ["mcp"]
+---
+O **Model Context Protocol (MCP)** é um protocolo criado para facilitar a troca de informações contextuais entre aplicações e modelos de linguagem. Neste artigo, vamos entender como o MCP funciona utilizando o **C4 Model**, uma técnica de modelagem que organiza sistemas em quatro níveis: **Contexto**, **Container**, **Componente** e **Código**. A ideia é mostrar, de forma visual e progressiva, como o MCP se encaixa dentro de um ecossistema de software moderno.
+## C1
+O **Model Context Protocol (MCP)** atua como uma ponte entre diferentes sistemas dentro de um ecossistema que depende de modelos de linguagem. No nível de contexto (C1) do **C4 Model**, buscamos entender como o MCP se posiciona no mundo e qual problema ele resolve em larga escala.
+
+O MCP permite que **aplicações host**, como IDEs, editores de texto, assistentes locais (por exemplo, Claude Desktop), e outras interfaces de usuário, integrem modelos de linguagem com maior inteligência contextual. Essas aplicações geralmente requerem informações adicionais para fornecer respostas mais precisas e relevantes por parte dos LLMs (Large Language Models). O MCP entra em cena como um facilitador dessa integração.
+
+A principal função do MCP nesse nível é promover uma **orquestração de contexto**. Quando um usuário interage com uma aplicação host e faz uma solicitação, o host identifica a necessidade de informações suplementares. Ele então consulta um ou mais **servidores MCP**, que atuam como fornecedores de contexto. Esses servidores localizam, processam e retornam dados relevantes — provenientes de sistemas de arquivos, bancos de dados, ferramentas de produtividade ou APIs externas. Em seguida, o host utiliza essas informações para **enriquecer o prompt** enviado ao modelo de linguagem.
+
+Os **servidores MCP** funcionam como **adaptadores universais**, encapsulando o acesso a diversas fontes de dados por meio de um **protocolo padronizado**. Essa padronização permite que qualquer aplicação host se conecte a qualquer servidor MCP sem a necessidade de integrações personalizadas ou acoplamentos rígidos.
+
+Esse nível destaca a essência do problema que o MCP resolve: **a criação de uma linguagem comum para o compartilhamento e o consumo de contexto entre aplicações de IA**. Ao estabelecer um protocolo interoperável, o MCP promove a reutilização de componentes e reduz o custo de integração em ecossistemas distribuídos e heterogêneos.
+
+**Principais componentes:**
+- **Usuários:** Humanos e sistemas externos;
+- **Host:** Programas como Claude Desktop, IDEs ou ferramentas de IA que desejam acessar dados por meio do MCP;
+- **LLM:** Modelo de linguagem de larga escala (Claude, GPT, etc);
+- **Servidor:** Aplicações pequenas que expõem capacidades específicas através do MCP;
+- **Dados:** Base de dados para adicionar o contexto.
+### Diagrama 
+
+![Diagrama C1](/articles/mcp-in-c4/c1.png)
+
+## C2
+No nível de contêineres do **C4 Model**, exploramos os principais blocos de construção do sistema MCP, respondendo à pergunta: **"Quais são as partes fundamentais do sistema e como elas se comunicam?"**
+
+O ecossistema do MCP é composto por dois participantes principais: o **Host MCP** e o **Servidor MCP**, cada um dividido em **camadas especializadas** com responsabilidades bem definidas.
+#### Host MCP
+- **Interface do Usuário**: Recebe as solicitações do usuário e exibe os resultados.    
+- **Gerenciador de Contexto**: Responsável por determinar quais informações são necessárias para enriquecer o prompt enviado ao modelo.
+- **Camada de Protocolo**: Formata mensagens conforme o padrão MCP, garantindo compatibilidade com os servidores.
+- **Camada de Transporte**: Utiliza **JSON-RPC 2.0** para comunicação padronizada e eficiente com os servidores MCP.
+- **Interface LLM**: Integra o prompt enriquecido ao modelo de linguagem.
+#### Servidor MCP
+- **Camada de Transporte**: Recebe e responde às solicitações JSON-RPC oriundas dos hosts.
+- **Camada de Protocolo**: Interpreta mensagens MCP, extraindo os parâmetros e comandos.
+- **Adaptadores de Ferramentas**: Conectam-se a fontes de dados externas (bancos, arquivos, APIs).
+- **Processador de Dados**: Formata e transforma os dados obtidos, deixando-os prontos para consumo pelos LLMs.
+
+Este nível evidencia a **arquitetura orientada à responsabilidade** do MCP, onde **hosts** se concentram em entender a intenção do usuário e **servidores** se especializam em fornecer dados relevantes, respeitando uma **interface comum e extensível**.
+
+| Container                      | Papel                                                            | Importância                                              |
+| ------------------------------ | ---------------------------------------------------------------- | -------------------------------------------------------- |
+| **Camada de Protocolo**        | Formata mensagens, vincula requisições e padroniza a comunicação | **Alta** — Define o contrato entre host e servidor       |
+| **Camada de Transporte**       | Realiza a comunicação assíncrona via JSON-RPC 2.0                | **Alta** — Permite interoperabilidade e desacoplamento   |
+| **Gerenciador de Contexto**    | Orquestra a obtenção e integração de informações ao prompt       | **Alta** — Núcleo funcional do lado cliente              |
+| **Adaptadores de Ferramentas** | Conectam o servidor a diversas fontes de dados                   | **Média** — Permite flexibilidade na extração de dados   |
+| **Interface LLM**              | Integra o prompt enriquecido ao modelo                           | **Alta** — Viabiliza o uso efetivo dos dados contextuais |
+| **Processador de Dados**       | Prepara os dados extraídos para consumo pelos LLMs               | **Alta** — Garante adequação de formato e semântica      |
+
+Esse diagrama representa claramente a **divisão de responsabilidades entre containers** dentro do host e do servidor MCP, com os fluxos de dados marcando o ciclo completo de uma solicitação.
+
+### Diagrama
+![Diagrama C2](/articles/mcp-in-c4/c2.png)
+**Fluxo principal**:
+1. O Host MCP inicia uma solicitação de contexto.
+2. A **camada de protocolo** empacota a solicitação segundo o padrão MCP.
+3. A **camada de transporte** envia a requisição via **JSON-RPC 2.0**.
+4. O **Servidor MCP** recebe, interpreta e processa a solicitação.
+5. Os **adaptadores** acessam os dados externos e passam ao **processador**.
+6. Os dados formatados são retornados ao host.
+7. O **Gerenciador de Contexto** do host integra essas informações ao prompt enviado ao LLM.
+
+## C3
+No nível de componentes, exploramos os elementos funcionais internos de cada contêiner que compõe o ecossistema MCP. Este nível responde à pergunta: **"Como cada contêiner realiza suas responsabilidades?"**
+#### Host MCP
+- **Componente de Descoberta de Servidores**: Localiza servidores MCP disponíveis na rede ou sistema local.
+- **Gerenciador de Sessão**: Mantém conexões persistentes com servidores MCP previamente descobertos.
+- **Processador de Solicitações**: Formata e envia requisições seguindo as regras do protocolo MCP.
+- **Interpretador de Respostas**: Analisa as respostas recebidas, tratando erros e extraindo dados úteis.
+- **Construtor de Contexto**: Integra os dados recebidos em um prompt coerente a ser enviado ao modelo de linguagem.
+#### Servidor MCP
+- **Endpoint RPC**: Responsável por receber e despachar requisições JSON-RPC.
+- **Gerenciador de Autenticação**: Valida as credenciais e controla o acesso às funcionalidades do servidor.
+- **Manipuladores de Métodos**: Implementam as operações definidas pelo protocolo MCP.
+- **Conectores de Dados**: Acessam sistemas externos como bancos de dados, sistemas de arquivos ou APIs.
+- **Sistema de Cache**: Armazena resultados frequentemente requisitados para ganho de desempenho.
+
+| Componente                      | Papel                                 | Importância                                             |
+| ------------------------------- | ------------------------------------- | ------------------------------------------------------- |
+| **Descoberta de Servidores**    | Localiza servidores MCP disponíveis   | **Alta** — Permite descoberta automática de serviços    |
+| **Gerenciador de Sessão**       | Mantém conexões com servidores        | **Média** — Otimiza persistência e reconexões           |
+| **Processador de Solicitações** | Formata e envia mensagens MCP         | **Alta** — Garante conformidade com o protocolo         |
+| **Interpretador de Respostas**  | Analisa e interpreta dados recebidos  | **Alta** — Extrai contexto relevante                    |
+| **Endpoint RPC**                | Porta de entrada para requisições     | **Alta** — Fundamental para interoperabilidade          |
+| **Manipuladores de Métodos**    | Implementam lógica de negócio do MCP  | **Alta** — Realizam as operações solicitadas            |
+| **Conectores de Dados**         | Acessam fontes externas de informação | **Alta** — Viabilizam a riqueza contextual do protocolo |
+| **Sistema de Cache**            | Armazena resultados temporários       | **Média** — Melhora desempenho e eficiência             |
+| **Gerenciador de Autenticação** | Controla e valida acessos             | **Alta** — Garante segurança e governança\|             |
+| **Construtor de Contexto**      | Integra dados no prompt final         | **Alta** — Essencial para uso efetivo com LLMs          |
+### Diagrama
+![Diagrama C3](/articles/mcp-in-c4/c3.png)
+Neste nível, observamos a **implementação concreta do protocolo MCP**. O host inicia buscando e conectando-se a servidores relevantes, envia solicitações devidamente formatadas, e processa respostas para enriquecer os prompts. O servidor, por sua vez, autentica, processa e executa as operações com eficiência e segurança.
+
+Essa arquitetura revela a natureza **modular e extensível** do MCP: cada componente pode ser desenvolvido, substituído ou evoluído de forma independente, desde que respeite os contratos estabelecidos pelo protocolo.
+### Considerações finais
+Se você trabalha com **LLMs, integração de ferramentas e orquestração de contexto**, entender o MCP pode ser essencial. Acompanhe a leitura para ver como ele resolve um problema comum de forma elegante e padronizada. Para mais detalhes técnicos, consulte também a [documentação oficial do MCP](https://modelcontextprotocol.io/introduction).
